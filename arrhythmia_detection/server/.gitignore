@@ -1,0 +1,125 @@
+# General
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+*.db
+*.sqlite
+*.log
+
+# Virtual Environment
+venv/
+.venv/
+
+# Node.js
+node_modules/
+
+# IDE/Editor
+.vscode/
+.idea/
+
+# Flask
+flask_session/
+instance/
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+*.db
+
+# Environment variables
+.env
+
+# Compiled source
+*.com
+*.class
+*.dll
+*.exe
+*.o
+*.so
+
+# Logs and databases
+logs/
+*.log
+*.sql
+*.sqlite
+
+# Editor directories and files
+.idea/
+.vscode/
+
+# Mac
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# Thumbnails
+._*
+
+# Files that might appear on external disks
+.Spotlight-V100
+.Trashes
+
+# Windows
+Thumbs.db
+ehthumbs.db
+
+# Python
+*.pyc
+*.pyo
+*.pyd
+
+# Jupyter Notebook
+.ipynb_checkpoints/
+
+# Images
+*.png
+*.jpg
+*.jpeg
+*.gif
+*.ico
+*.svg
+
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+*.pyw
+*.pyz
+*.pyz/venv/
+*.pyenv/
+*.env/
+*.egg-info/
+dist/
+build/
+
+# C extensions
+*.so
+
+# Distribution / packaging
+.Python
+env/
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+
+# Flask assets
+web/assets/bundles/
+web/assets/.webassets-cache
+web/node_modules/
+web/builder/
+web/static/
+web/.sass-cache/
