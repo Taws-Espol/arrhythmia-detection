@@ -8,10 +8,8 @@ class ArrhythmiaModel:
         model_filepath = "./app/models/model.keras"
         self.model = load_model(model_filepath)
 
-    def predict_arrhythmia(self, json_data):
-
-        loaded_data = json_data if isinstance(json_data, dict) else json.loads(json_data)
-        heartbeat_data = np.array(loaded_data["heartbeat_data"])
+    def predict_arrhythmia(self, heartbeat_data):
+        heartbeat_data = np.array(heartbeat_data)
         dataArr = np.expand_dims(heartbeat_data, axis=0)
         class_labels = ["N", "S", "V", "F", "Q"]
 

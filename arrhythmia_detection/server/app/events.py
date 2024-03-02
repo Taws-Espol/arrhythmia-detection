@@ -27,18 +27,11 @@ def handle_connection_response_client(_):
 
 
 @socketio.on("heartbeat_input")
-def handle_new_data(json_data):
+def handle_heartbeat_input(heartbeat_number):
     if transmission_manager.is_transmitting():
-        prediction, class_likelihood = arrhythmia_service.predict_arrhythmia(json_data)
-        class_likelihood = float(class_likelihood)
-        prediction_dict = {
-            "prediction": prediction,
-            "class_likelihood": class_likelihood,
-            "json_data": json_data,
-        }
-        # Serialize the dictionary to a JSON string
-        json_string = json.dumps(prediction_dict)
-        socketio.emit("heartbeat_output", json_string)
+        socketio.emit("heartbeat_number", heartbeat_number)
+        json_string = arrhythmia_service.predict_arrhythmia(heartbeat_number)
+        socketio.emit("heartbeat_prediction", json_string)
 
 
 @socketio.on("start_transmission")
