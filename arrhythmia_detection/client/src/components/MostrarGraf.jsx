@@ -1,12 +1,33 @@
 import { Line } from 'react-chartjs-2';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
+import {
+    Chart as ChartJS,
+    CategoryScale,
+    LinearScale,
+    PointElement,
+    LineElement,
+    Title,
+    Tooltip,
+    Legend,
+  } from 'chart.js';
+  
+  ChartJS.register(
+    CategoryScale,
+    LinearScale,
+    PointElement,
+    LineElement,
+    Title,
+    Tooltip,
+    Legend
+  );
 
+  
 const MostrarGraf = () => {
     const [chartData, setChartData] = useState({
         labels: [],
         datasets: [
             {
-                label: 'Mi dataset',
+                label: 'Pulso Cardiaco',
                 data: [],
                 fill: false,
                 backgroundColor: 'rgb(75, 192, 192)',
@@ -16,26 +37,26 @@ const MostrarGraf = () => {
     });
     const [isRunning, setIsRunning] = useState(false);
 
+    const addData = useCallback(() => {
+        setChartData(prevChartData => {
+            const newData = { ...prevChartData };
+            const puntos_sec = 1;
+            newData.labels = [...newData.labels.slice(-puntos_sec + 1), new Date().toLocaleTimeString()];
+            newData.datasets[0].data = [...newData.datasets[0].data.slice(-puntos_sec + 1), Math.random() * 100];
+            return newData;
+        });
+    }, []);
+
     useEffect(() => {
         let interval;
         if (isRunning) {
-            const puntos_sec = 1;
-            interval = setInterval(() => {
-                const newData = {
-                    labels: [...chartData.labels.slice(-puntos_sec + 1), new Date().toLocaleTimeString()],
-                    datasets: [
-                        {
-                            ...chartData.datasets[0],
-                            data: [...chartData.datasets[0].data.slice(-puntos_sec + 1), Math.random() * 100],
-                        },
-                    ],
-                };
-                setChartData(newData);
-            }, 30);
+            interval = setInterval(addData, 1000); // Ajustado a 1000 ms (1 segundo) para mejor claridad
+        } else {
+            clearInterval(interval);
         }
 
         return () => clearInterval(interval);
-    }, [isRunning, chartData]);
+    }, [isRunning, addData]);
 
     const handleToggle = () => {
         setIsRunning((prevIsRunning) => !prevIsRunning);
@@ -44,27 +65,17 @@ const MostrarGraf = () => {
     return (
         <div>
             <button onClick={handleToggle}>{isRunning ? 'Detener' : 'Iniciar'} Gráfico</button>
-            {isRunning && (
-                <Line id="myChart" data={chartData} options={{
-                    animation: false,
+            <Line
+                data={chartData}
+                options={{
                     scales: {
-                      x: {
-                        display: false, // Oculta las etiquetas del eje X
-                        grid: {
-                          display: false // Oculta las líneas de la cuadrícula del eje X
+                        y: {
+                            beginAtZero: true
                         }
-                      },
-                      y: {
-                        beginAtZero: true // Comienza el eje Y desde cero
-                      }
-                    },
-                    elements: {
-                      line: {
-                        tension: 0 // Deshabilita la suavización de la línea
-                      }
                     }
-                  }} />
-            )}
+                }}
+                id="myChart"
+            />
         </div>
     );
 };
