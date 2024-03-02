@@ -9,6 +9,7 @@ esp32_namespace = Namespace(
     description="Ruta para establecer comunicacion con el ESP32, y activar los Web Sockets",
 )
 
+
 @esp32_namespace.route("/connect")
 class ConnectESP32(Resource):
     @esp32_namespace.doc(
@@ -17,10 +18,10 @@ class ConnectESP32(Resource):
             500: "Fallos en la conexion con ESP32",
         }
     )
-    def post(self):
+    def get(self):
         socketio.emit("connection_request")
-
-        for _ in range(10):  # Espera hasta 10 segundos
+        connection_manager.remake_connection()
+        for _ in range(5):  # Espera hasta 5 segundos
             if connection_manager.is_connected():
                 return jsonify({"message": "Connection established with ESP32"}), 200
             sleep(1)

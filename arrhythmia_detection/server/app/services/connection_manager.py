@@ -9,5 +9,9 @@ class ConnectionManager:
     def handle_connection_response_client(self):
         self.client_connected = True
 
+    def remake_connection(self):
+        self.esp32_connected = False
+        self.client_connected = False
+
     def is_connected(self):
         return self.esp32_connected and self.client_connected
