@@ -18,18 +18,20 @@ def handle_connect():
 
 @socketio.on("connection_response_esp32")
 def handle_connection_response_esp32(_):
+    print("Connection with ESP32 established")
     connection_manager.handle_connection_response_esp32()
 
 
 @socketio.on("connection_response_client")
 def handle_connection_response_client(_):
-    connection_manager.handle_connection_response_esp32()
+    print("Connection with Client established")
+    connection_manager.handle_connection_response_client()
 
 
 @socketio.on("heartbeat_input")
-def handle_heartbeat_input(heartbeat_number):
+def handle_heartbeat_input(heartbeat_number:float):
     if transmission_manager.is_transmitting():
-        socketio.emit("heartbeat_number", heartbeat_number)
+        socketio.emit("heartbeat_output", heartbeat_number)
         json_string = arrhythmia_service.predict_arrhythmia(heartbeat_number)
         socketio.emit("heartbeat_prediction", json_string)
 

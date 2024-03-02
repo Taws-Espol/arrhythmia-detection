@@ -15,7 +15,7 @@ class ConnectESP32(Resource):
     @esp32_namespace.doc(
         responses={
             200: "Conexion establecida con ESP32",
-            500: "Fallos en la conexion con ESP32",
+            408: "Fallos en la conexion con ESP32",
         }
     )
     def get(self):
@@ -23,7 +23,7 @@ class ConnectESP32(Resource):
         connection_manager.remake_connection()
         for _ in range(5):  # Espera hasta 5 segundos
             if connection_manager.is_connected():
-                return jsonify({"message": "Connection established with ESP32"}), 200
+                return {"message": "Connection established with ESP32"}, 200
             sleep(1)
 
-        return jsonify({"message": "Failed to connect to ESP32"}), 500
+        return {"message": "Failed to connect to ESP32"}, 408
