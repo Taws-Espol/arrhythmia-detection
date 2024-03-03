@@ -29,7 +29,7 @@ def handle_connection_response_client(_):
 
 
 @socketio.on("heartbeat_input")
-def handle_heartbeat_input(heartbeat_number:float):
+def handle_heartbeat_input(heartbeat_number: float):
     if transmission_manager.is_transmitting():
         socketio.emit("heartbeat_output", heartbeat_number)
         json_string = arrhythmia_service.predict_arrhythmia(heartbeat_number)
