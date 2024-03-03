@@ -104,7 +104,7 @@ void setup() {
     bool connected = client.connect(websockets_server_host, websockets_server_port, "/");
     if(connected) {
         Serial.println("Connected!");
-        client.send("Hello Server");
+        client.send("connection_response_esp32");
     } else {
         Serial.println("Not Connected!");
     }
