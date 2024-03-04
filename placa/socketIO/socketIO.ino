@@ -18,7 +18,6 @@ const char *HOST = "192.168.100.6:5000";
 
 void event(const char *payload, size_t length){
     USE_SERIAL.printf("got message: %s\n", payload);
-    webSocket.emit("connection_response_esp32");
 }
 
 void setup(){
@@ -45,17 +44,29 @@ void setup(){
         delay(100);
     }
     USE_SERIAL.println("Si WIFI");
-    // Receive events from server
-    webSocket.on("connection_request", event);
-    webSocket.emit("connection_response_esp32");
+    
+    webSocket.on("connect", event);
+    webSocket.on("connection_request", handleConnectionRequest);
+     // Configura el manejador para el evento 'connection_request'
+    webSocket.emit("prueba","funciona");
 
-    webSocket.begin("192.168.100.6", 5000, "/socket.io/?transport=websocket");
+    webSocket.emit("connection_response_esp32","conexion?");
+    webSocket.begin("192.168.100.6:5000/");
+    
+
 }
 
 
 void loop(){
-    webSocket.loop();
-    webSocket.emit("heartbeat_input","0.5");
-    delay(1000);
+  webSocket.loop();
+  webSocket.on("connection_request", handleConnectionRequest);
+  webSocket.emit("prueba","funciona");
+  delay(3000);
+}
 
+void handleConnectionRequest(const char *payload, size_t length) {
+    // Maneja el evento 'connection_request' recibido desde el servidor
+    Serial.println("Evento 'connection_request' recibido desde el servidor");
+    Serial.print("Mensaje: ");
+    Serial.println(payload);
 }
