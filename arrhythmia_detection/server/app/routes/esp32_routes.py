@@ -19,8 +19,8 @@ class ConnectESP32(Resource):
         }
     )
     def get(self):
-        socketio.emit("connection_request")
         connection_manager.remake_connection()
+        socketio.emit("connection_request")
         for _ in range(5):  # Espera hasta 5 segundos
             if connection_manager.is_connected():
                 return {"message": "Connection established with ESP32"}, 200
