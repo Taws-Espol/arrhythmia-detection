@@ -30,8 +30,8 @@ float escala = 1023.0;
 
 const char* ssid = "NETLIFE-MUNIZAGA"; //Enter SSID
 const char* password = "Jemjj202728"; //Enter Password
-const char* websockets_server_host = "serverip_or_name"; //Enter server adress
-const uint16_t websockets_server_port = 8080; // Enter server port
+const char* websockets_server_host = "//192.168.100.6"; //Enter server adress
+const uint16_t websockets_server_port = 5000; // Enter server port
 
 using namespace websockets;
 
@@ -63,7 +63,7 @@ float leerPulsoCardiaco() {
     // Verifica si los electrodos están desconectados
     if ((digitalRead(34) == 1) || (digitalRead(35) == 1)) {
       // Actualiza el estado de los electrodos
-        Serial.println("! Electrodos desconectados !");
+        //Serial.println("! Electrodos desconectados !");
         return 0;
     } else {
         float valorAD8232 = analogRead(A0);
@@ -101,7 +101,8 @@ void setup() {
 
     Serial.println("Connected to Wifi, Connecting to server.");
     // try to connect to Websockets server
-    bool connected = client.connect(websockets_server_host, websockets_server_port, "/");
+    //bool connected = client.connect(websockets_server_host, websockets_server_port, "/");
+    bool connected = client.connect("http://192.168.100.6:5000/");
     if(connected) {
         Serial.println("Connected!");
         client.send("connection_response_esp32");
@@ -118,7 +119,7 @@ void setup() {
 
 void loop() {
   float pulsoCardiaco = leerPulsoCardiaco();
-  Serial.println(pulsoCardiaco);
+  //Serial.println(pulsoCardiaco);
     // let the websockets client check for incoming messages
     if(client.available()) {
         client.poll();
