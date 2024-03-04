@@ -39,13 +39,13 @@ def handle_heartbeat_input(heartbeat_number):
 
 
 @socketio.on("start_transmission")
-def handle_start(_):
+def handle_start():
     transmission_manager.start_transmission()
     print("Transmission Enabled")
 
 
 @socketio.on("stop_transmission")
-def handle_stop(_):
+def handle_stop():
     transmission_manager.stop_transmission()
     print("Transmission Disabled")
 

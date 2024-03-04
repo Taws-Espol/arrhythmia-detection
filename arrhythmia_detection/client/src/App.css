@@ -1,3 +1,4 @@
+
 #root {
   max-width: 1280px;
   margin: 0 auto;
@@ -17,6 +18,18 @@
 .logo.react:hover {
   filter: drop-shadow(0 0 2em #61dafbaa);
 }
+
+
+.botonIniciar {
+  background-color: #00ff4476;
+  color: #000000;
+  font-style: "Figtree";
+  transition: color 0.5 ease-in-out;
+}
+.botonIniciar:hover{
+  background-color: #ff6464d6;
+}
+
 
 @keyframes logo-spin {
   from {
@@ -39,4 +52,12 @@
 
 .read-the-docs {
   color: #888;
+}
+
+.glassmorphism{
+    backdrop-filter: blur(5px) saturate(108%); 
+    -webkit-backdrop-filter: blur(5px) saturate(108%); 
+    background-color: rgba(255,255,255, 0.75); 
+    border-radius:  24px; 
+    border: 1px solid rgba(148, 1, 1, 0.94); 
 }
