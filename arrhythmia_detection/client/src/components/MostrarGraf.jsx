@@ -29,9 +29,9 @@ const MostrarGraf = () => {
         datasets: [
             {
                 label: 'Pulso Cardiaco',
-                data: [],
+                data: [0],
                 backgroundColor: 'rgb(75, 192, 192)',
-                borderColor: 'rgb(75, 50, 50, 1)',
+                borderColor: 'rgb(75, 50, 50)',
                 borderwidth: 5,
             },
         ],
@@ -39,12 +39,12 @@ const MostrarGraf = () => {
     const [isRunning, setIsRunning] = useState(false);
 
 
-    const addData = useCallback((data) => {
+    const addData = useCallback((dataNumber) => {
         setChartData((prevChartData) => {
             const newData = { ...prevChartData };
             const puntos_sec = 1;
             newData.labels = [...newData.labels.slice(-puntos_sec + 1), new Date().toLocaleTimeString()];
-            newData.datasets[0].data = [...newData.datasets[0].data.slice(-puntos_sec + 1), Number(data)];
+            newData.datasets[0].data = [...newData.datasets[0].data.slice(-puntos_sec + 1), Number(dataNumber)*100];
             return newData;
         });
     }, []);
@@ -76,7 +76,7 @@ const MostrarGraf = () => {
         return () => {
             socket.off('heartbeat_output');
         }
-    }, [addData]);
+    });
 
 
     const handleToggle = () => {
