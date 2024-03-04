@@ -18,7 +18,7 @@ def handle_connect():
 
 @socketio.on("connection_response_esp32")
 def handle_connection_response_esp32():
-    print("Connection with ESP32 established: ")
+    print("Connection with ESP32 established")
     connection_manager.handle_connection_response_esp32()
 
 
