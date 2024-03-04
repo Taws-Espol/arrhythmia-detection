@@ -47,8 +47,9 @@ void setup(){
     USE_SERIAL.println("Si WIFI");
     // Receive events from server
     webSocket.on("connection_request", event);
+    webSocket.emit("connection_response_esp32");
 
-    webSocket.begin("192.168.100.6", 5000, "/socket.io/?EIO=4&transport=websocket");
+    webSocket.begin("192.168.100.6", 5000, "/socket.io/?transport=websocket");
 }
 
 
