@@ -17,8 +17,8 @@ def handle_connect():
 
 
 @socketio.on("connection_response_esp32")
-def handle_connection_response_esp32(_):
-    print("Connection with ESP32 established")
+def handle_connection_response_esp32():
+    print("Connection with ESP32 established: ")
     connection_manager.handle_connection_response_esp32()
 
 
@@ -30,6 +30,7 @@ def handle_connection_response_client(_):
 
 @socketio.on("heartbeat_input")
 def handle_heartbeat_input(heartbeat_number):
+    print("Heartbeat received: ", heartbeat_number)
     if transmission_manager.is_transmitting():
         heartbeat_number = float(heartbeat_number)
         socketio.emit("heartbeat_output", heartbeat_number)
@@ -38,12 +39,16 @@ def handle_heartbeat_input(heartbeat_number):
 
 
 @socketio.on("start_transmission")
-def handle_start(_):
+def handle_start():
     transmission_manager.start_transmission()
     print("Transmission Enabled")
 
 
 @socketio.on("stop_transmission")
-def handle_stop(_):
+def handle_stop():
     transmission_manager.stop_transmission()
     print("Transmission Disabled")
+
+@socketio.on("event_name")
+def handle_prueba(data):
+    print("prueba",data)
