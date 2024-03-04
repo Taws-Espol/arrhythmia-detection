@@ -19,9 +19,9 @@ class ArrhythmiaService:
             self.heartbeat_data.clear()
             class_likelihood = float(class_likelihood)
         prediction_dict = {
-            "prediction": prediction if prediction is not None else "NO_PREDICTION",
+            "prediction": prediction if prediction is not None else "NO_STATUS",
             "class_likelihood": (
-                class_likelihood if prediction is not None else "NO_PREDICTION"
+                class_likelihood if prediction is not None else "NO_STATUS"
             ),
         }
         # Serialize the dictionary to a JSON string

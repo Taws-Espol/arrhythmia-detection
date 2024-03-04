@@ -30,20 +30,21 @@ const MostrarGraf = () => {
             {
                 label: 'Pulso Cardiaco',
                 data: [],
-                fill: false,
                 backgroundColor: 'rgb(75, 192, 192)',
-                borderColor: 'rgb(75, 192, 192, 0.2)',
+                borderColor: 'rgb(75, 50, 50, 1)',
+                borderwidth: 5,
             },
         ],
     });
     const [isRunning, setIsRunning] = useState(false);
 
+
     const addData = useCallback((data) => {
-        setChartData(prevChartData => {
+        setChartData((prevChartData) => {
             const newData = { ...prevChartData };
             const puntos_sec = 1;
             newData.labels = [...newData.labels.slice(-puntos_sec + 1), new Date().toLocaleTimeString()];
-            newData.datasets[0].data = [...newData.datasets[0].data.slice(-puntos_sec + 1),data*100];
+            newData.datasets[0].data = [...newData.datasets[0].data.slice(-puntos_sec + 1), Number(data)];
             return newData;
         });
     }, []);
@@ -68,8 +69,8 @@ const MostrarGraf = () => {
 
     useEffect(() => {
         socket.on("heartbeat_output", (data) => {
-            console.log(data[0])
-            addData(Number(data[0]));
+            console.log(data)
+            addData(Number(data));
         });
     
         return () => {
