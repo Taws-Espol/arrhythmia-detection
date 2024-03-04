@@ -10,7 +10,8 @@ import {
     Tooltip,
     Legend,
   } from 'chart.js';
-  
+  import {socket} from '../socket';
+
   ChartJS.register(
     CategoryScale,
     LinearScale,
@@ -31,7 +32,7 @@ const MostrarGraf = () => {
                 data: [],
                 fill: false,
                 backgroundColor: 'rgb(75, 192, 192)',
-                borderColor: 'rgba(75, 192, 192, 0.2)',
+                borderColor: 'rgb(75, 192, 192, 0.2)',
             },
         ],
     });
@@ -51,20 +52,35 @@ const MostrarGraf = () => {
         let interval;
         if (isRunning) {
             interval = setInterval(addData, 1000); // Ajustado a 1000 ms (1 segundo) para mejor claridad
-        } else {
-            clearInterval(interval);
         }
+        else {
+            clearInterval(interval);
+        };
 
         return () => clearInterval(interval);
     }, [isRunning, addData]);
 
+    function connect() {
+        socket.connect();
+      }
+    
+      function disconnect() {
+        socket.disconnect();
+      } 
+
     const handleToggle = () => {
         setIsRunning((prevIsRunning) => !prevIsRunning);
+        if(isRunning){
+            connect();
+            socket.emit('start_transmission');
+        } else {
+            disconnect();
+            socket.emit('stop_transmission');
+        }
     };
 
     return (
         <div>
-            <button onClick={handleToggle}>{isRunning ? 'Detener' : 'Iniciar'} Gráfico</button>
             <Line
                 data={chartData}
                 options={{
@@ -76,6 +92,7 @@ const MostrarGraf = () => {
                 }}
                 id="myChart"
             />
+            <button onClick={handleToggle} class="botonIniciar">{isRunning ? 'Detener' : 'Iniciar'} Gráfico</button>
         </div>
     );
 };
