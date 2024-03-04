@@ -38,44 +38,52 @@ const MostrarGraf = () => {
     });
     const [isRunning, setIsRunning] = useState(false);
 
-    const addData = useCallback(() => {
+    const addData = useCallback((data) => {
         setChartData(prevChartData => {
             const newData = { ...prevChartData };
             const puntos_sec = 1;
             newData.labels = [...newData.labels.slice(-puntos_sec + 1), new Date().toLocaleTimeString()];
-            newData.datasets[0].data = [...newData.datasets[0].data.slice(-puntos_sec + 1), Math.random() * 100];
+            newData.datasets[0].data = [...newData.datasets[0].data.slice(-puntos_sec + 1),data*100];
             return newData;
         });
     }, []);
 
+    // useEffect(() => {
+    //     let interval;
+    //     socket.on("heartbeat_output", ((data)=>{
+    //         if (isRunning) {
+    //             interval = setInterval(addData(Number(data)), 1000); // Ajustado a 1000 ms (1 segundo) para mejor claridad
+    //         }
+    //         else {
+    //             clearInterval(interval);
+    //         }
+    //     }))
+
+    //     return () => {
+    //         clearInterval(interval);
+    //         socket.off('heartbeat_output');
+    //     }
+            
+    // }, [isRunning, addData]);
+
     useEffect(() => {
-        let interval;
-        if (isRunning) {
-            interval = setInterval(addData, 1000); // Ajustado a 1000 ms (1 segundo) para mejor claridad
-        }
-        else {
-            clearInterval(interval);
-        };
-
-        return () => clearInterval(interval);
-    }, [isRunning, addData]);
-
-    function connect() {
-        socket.connect();
-      }
+        socket.on("heartbeat_output", (data) => {
+            console.log(data[0])
+            addData(Number(data[0]));
+        });
     
-      function disconnect() {
-        socket.disconnect();
-      } 
+        return () => {
+            socket.off('heartbeat_output');
+        }
+    }, [addData]);
+
 
     const handleToggle = () => {
         setIsRunning((prevIsRunning) => !prevIsRunning);
         if(isRunning){
-            connect();
-            socket.emit('start_transmission');
-        } else {
-            disconnect();
             socket.emit('stop_transmission');
+        } else {
+            socket.emit('start_transmission');
         }
     };
 
@@ -92,7 +100,7 @@ const MostrarGraf = () => {
                 }}
                 id="myChart"
             />
-            <button onClick={handleToggle} class="botonIniciar">{isRunning ? 'Detener' : 'Iniciar'} Gráfico</button>
+            <button onClick={handleToggle} className="botonIniciar">{isRunning ? 'Detener' : 'Iniciar'} Gráfico</button>
         </div>
     );
 };

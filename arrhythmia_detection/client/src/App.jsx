@@ -22,8 +22,8 @@ function App() {
             <h2 style={{color:'black'}}>Gráfica en tiempo real</h2>
             <MostrarGraf />
           </div>
-          <div class='glassmorphism' style={{alignSelf:'flex-start'}}>
-            <text color='black'>Tipo de Arritmia: {socket.emit('heartbeat_input')[1]}</text>
+          <div className='glassmorphism' style={{alignSelf:'flex-start'}}>
+            <text color='black'>Tipo de Arritmia: {socket.on('heartbeat_prediction')["prediction"]}</text>
           </div>
         </div>
       </section>
