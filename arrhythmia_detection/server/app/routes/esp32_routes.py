@@ -10,7 +10,7 @@ esp32_namespace = Namespace(
 )
 
 
-@esp32_namespace.route("/connect")
+@esp32_namespace.route("/")
 class ConnectESP32(Resource):
     @esp32_namespace.doc(
         responses={
@@ -19,7 +19,7 @@ class ConnectESP32(Resource):
         }
     )
     def get(self):
-        socketio.emit("connection_request")
+        socketio.emit("connection_request","conexion con ESP32")
         connection_manager.remake_connection()
         for _ in range(5):  # Espera hasta 5 segundos
             if connection_manager.is_connected():
