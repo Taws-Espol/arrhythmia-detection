@@ -1,3 +1,7 @@
+import eventlet
+
+eventlet.monkey_patch()
+
 # app/__init__.py
 from flask import Flask, render_template
 from flask_cors import CORS
