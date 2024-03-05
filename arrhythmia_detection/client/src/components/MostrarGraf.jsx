@@ -69,7 +69,9 @@ const MostrarGraf = () => {
   useEffect(() => {
     const handleArrhythmiaPrediction = (jsonString) => {
       const data = JSON.parse(jsonString);
-      setArrhythmiaType(data.prediction);
+      if (data.prediction !== "NOT_STATUS") {
+        setArrhythmiaType(data.prediction);
+      }
     };
     socket.on("heartbeat_prediction", handleArrhythmiaPrediction);
 
@@ -136,7 +138,7 @@ const MostrarGraf = () => {
       >
         {isRunning ? "Detener" : "Iniciar"} Gráfico
       </button>
-      {arrhythmiaType && arrhythmiaType !== "NO_STATUS" && (
+      {arrhythmiaType && (
         <div
           className="glassmorphism"
           style={{
