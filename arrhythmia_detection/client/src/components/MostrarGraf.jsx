@@ -37,16 +37,44 @@ const MostrarGraf = () => {
   });
   const [isRunning, setIsRunning] = useState(false);
 
+  const [arrhythmiaType, setArrhythmiaType] = useState('');
+
+  const maxDataPoints = 400; // Limite de puntos en el gráfico
+
   const handleData = (data) => {
     if (isRunning) {
       setChartData((prevChartData) => {
         const newData = { ...prevChartData };
-        newData.labels.push(new Date().toLocaleTimeString());
-        newData.datasets[0].data.push(Number(data));
+        const { labels, datasets } = newData;
+        const timeLabel = new Date().toLocaleTimeString();
+
+        // Agrega el nuevo punto
+        labels.push(timeLabel);
+        datasets[0].data.push(Number(data));
+
+        // Si ya tienes 400 puntos, elimina el más antiguo
+        if (labels.length > maxDataPoints) {
+          labels.shift();
+          datasets[0].data.shift();
+        }
+
         return newData;
       });
     }
   };
+
+  useEffect(() => {
+    const handleArrhythmiaPrediction = (prediction) => {
+      setArrhythmiaType(prediction);
+    };
+    socket.on('heartbeat_prediction', handleArrhythmiaPrediction);
+
+    return () => {
+      socket.off('heartbeat_prediction', handleArrhythmiaPrediction);
+    };
+  }, []);
+
+
 
   useEffect(() => {
     if (isRunning) {
@@ -68,23 +96,38 @@ const MostrarGraf = () => {
 
   return (
     <div>
-      <Line
-        data={chartData}
-        options={{
-          scales: {
-            y: {
-              beginAtZero: true
-            }
-          },
-          responsive: true
-        }}
-        id="myChart"
-      />
-      <button onClick={handleToggle} className="botonIniciar">
+      <div style={{ width: '100%', overflowX: 'auto' }}>
+        <Line
+          data={chartData}
+          options={{
+            scales: {
+              y: {
+                beginAtZero: true
+              }
+            },
+            elements: {
+              point: {
+                radius: 0 // Oculta los puntos
+              }
+            },
+            responsive: true,
+            maintainAspectRatio: false // Importante para mantener la altura fija cuando se desplaza
+          }}
+          id="myChart"
+          style={{ minWidth: '1000px', minHeight: '300px' }}
+        />
+      </div>
+
+      <button onClick={handleToggle} className="botonIniciar" style={{ padding: '10px 20px', fontSize: '1rem', borderRadius: '5px', border: 'none', cursor: 'pointer', backgroundColor: '#2980b9', color: 'white' }}>
         {isRunning ? 'Detener' : 'Iniciar'} Gráfico
       </button>
+      <div className='glassmorphism' style={{ color: '#2c3e50', padding: '10px', borderRadius: '5px' }}>
+        <p>Tipo de Arritmia: {arrhythmiaType}</p>
+      </div>
     </div>
+
   );
+
 };
 
 export default MostrarGraf;
