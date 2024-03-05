@@ -70,7 +70,31 @@ const MostrarGraf = () => {
     const handleArrhythmiaPrediction = (jsonString) => {
       const data = JSON.parse(jsonString);
       if (data.prediction !== "NO_STATUS") {
-        setArrhythmiaType(data.prediction);
+        switch (data.prediction) {
+          case "N":
+            setArrhythmiaType("Latidos no ectópicos (latido normal)");
+            break;
+
+          case "S":
+            setArrhythmiaType("Latidos ectópicos supraventriculares");
+
+            break;
+
+          case "V":
+            setArrhythmiaType("Latidos ectópicos ventriculares");
+
+            break;
+
+          case "F":
+            setArrhythmiaType("Latidos de fusión");
+
+            break;
+
+          case "Q":
+            setArrhythmiaType("Latidos desconocidos");
+
+            break;
+        }
       }
     };
     socket.on("heartbeat_prediction", handleArrhythmiaPrediction);
