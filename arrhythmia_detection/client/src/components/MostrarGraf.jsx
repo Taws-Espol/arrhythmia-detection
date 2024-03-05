@@ -37,16 +37,30 @@ const MostrarGraf = () => {
   });
   const [isRunning, setIsRunning] = useState(false);
 
-  const handleData = (data) => {
-    if (isRunning) {
-      setChartData((prevChartData) => {
-        const newData = { ...prevChartData };
-        newData.labels.push(new Date().toLocaleTimeString());
-        newData.datasets[0].data.push(Number(data));
-        return newData;
-      });
-    }
-  };
+const maxDataPoints = 400; // Limite de puntos en el gráfico
+
+const handleData = (data) => {
+  if (isRunning) {
+    setChartData((prevChartData) => {
+      const newData = { ...prevChartData };
+      const { labels, datasets } = newData;
+      const timeLabel = new Date().toLocaleTimeString();
+
+      // Agrega el nuevo punto
+      labels.push(timeLabel);
+      datasets[0].data.push(Number(data));
+
+      // Si ya tienes 400 puntos, elimina el más antiguo
+      if (labels.length > maxDataPoints) {
+        labels.shift();
+        datasets[0].data.shift();
+      }
+
+      return newData;
+    });
+  }
+};
+
 
   useEffect(() => {
     if (isRunning) {
@@ -67,24 +81,33 @@ const MostrarGraf = () => {
   };
 
   return (
-    <div>
-      <Line
-        data={chartData}
-        options={{
-          scales: {
-            y: {
-              beginAtZero: true
-            }
-          },
-          responsive: true
-        }}
-        id="myChart"
-      />
+    <div style={{ overflowX: 'auto', maxWidth: '100%' }}>
+      <div style={{ minWidth: '500px', minHeight: '300px' }}>
+        <Line
+          data={chartData}
+          options={{
+            scales: {
+              y: {
+                beginAtZero: true
+              }
+            },
+            elements: {
+              point: {
+                radius: 0 // Oculta los puntos
+              }
+            },
+            responsive: true,
+            maintainAspectRatio: false // Importante para mantener la altura fija cuando se desplaza
+          }}
+          id="myChart"
+        />
+      </div>
       <button onClick={handleToggle} className="botonIniciar">
         {isRunning ? 'Detener' : 'Iniciar'} Gráfico
       </button>
     </div>
   );
+  
 };
 
 export default MostrarGraf;
