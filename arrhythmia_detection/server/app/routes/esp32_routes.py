@@ -10,7 +10,7 @@ esp32_namespace = Namespace(
 )
 
 
-@esp32_namespace.route("/connect")
+@esp32_namespace.route("/")
 class ConnectESP32(Resource):
     @esp32_namespace.doc(
         responses={
