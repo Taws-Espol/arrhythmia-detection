@@ -1,5 +1,6 @@
 import { Line } from 'react-chartjs-2';
 import { useState, useEffect, useCallback } from 'react';
+import { socket } from '../socket';
 import {
     Chart as ChartJS,
     CategoryScale,
@@ -10,7 +11,7 @@ import {
     Tooltip,
     Legend,
   } from 'chart.js';
-  import {socket} from '../socket';
+
 
   ChartJS.register(
     CategoryScale,
@@ -42,30 +43,31 @@ const MostrarGraf = () => {
     const addData = useCallback((data) => {
         setChartData((prevChartData) => {
             const newData = { ...prevChartData };
-            const puntos_sec = 1;
-            newData.labels = [...newData.labels.slice(-puntos_sec + 1), new Date().toLocaleTimeString()];
-            newData.datasets[0].data = [...newData.datasets[0].data.slice(-puntos_sec + 1), Number(data)];
+            newData.labels.push(new Date().toLocaleTimeString());
+            newData.datasets[0].data.push(Number(data)*100);
             return newData;
         });
     }, []);
 
-    // useEffect(() => {
-    //     let interval;
-    //     socket.on("heartbeat_output", ((data)=>{
-    //         if (isRunning) {
-    //             interval = setInterval(addData(Number(data)), 1000); // Ajustado a 1000 ms (1 segundo) para mejor claridad
-    //         }
-    //         else {
-    //             clearInterval(interval);
-    //         }
-    //     }))
+    useEffect(() => {
+        let interval;
+      
+        const handleData = (data) => {
+          if (!isRunning) return;
+          clearInterval(interval);
+          clearInterval(data);
+          interval = setInterval(() => {
+            addData(data);
+          }, 1000);
+        };
 
-    //     return () => {
-    //         clearInterval(interval);
-    //         socket.off('heartbeat_output');
-    //     }
-            
-    // }, [isRunning, addData]);
+        socket.on("heartbeat_output", handleData);
+      
+        return () => {
+          clearInterval(interval);
+          socket.off("heartbeat_output", handleData);
+        };
+      }, [isRunning, addData]);
 
     useEffect(() => {
         socket.on("heartbeat_output", (data) => {
@@ -81,7 +83,7 @@ const MostrarGraf = () => {
 
     const handleToggle = () => {
         setIsRunning((prevIsRunning) => !prevIsRunning);
-        if(isRunning){
+         if(isRunning){
             socket.emit('stop_transmission');
         } else {
             socket.emit('start_transmission');
@@ -97,7 +99,8 @@ const MostrarGraf = () => {
                         y: {
                             beginAtZero: true
                         }
-                    }
+                    },
+                    responsive: true
                 }}
                 id="myChart"
             />

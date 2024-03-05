@@ -20,11 +20,13 @@ function App() {
         <div style={{justifyContent:'space-evenly'}}>
           <div style={{alignSelf:'flex-start'}}>
             <h2 style={{color:'black'}}>Gráfica en tiempo real</h2>
-            <MostrarGraf />
+            <div>
+              <MostrarGraf />
+            </div>
           </div>
           <div className='glassmorphism' style={{alignSelf:'flex-start'}}>
-            <text color='black'>Tipo de Arritmia: {socket.on('heartbeat_prediction')["prediction"]}</text>
-          </div>
+            <text style ={{color:'black'}}>Tipo de Arritmia: {socket.on('heartbeat_prediction')["prediction"]}</text>
+          </div> 
         </div>
       </section>
     </div>
