@@ -69,7 +69,7 @@ const MostrarGraf = () => {
   useEffect(() => {
     const handleArrhythmiaPrediction = (jsonString) => {
       const data = JSON.parse(jsonString);
-      if (data.prediction !== "NOT_STATUS") {
+      if (data.prediction !== "NO_STATUS") {
         setArrhythmiaType(data.prediction);
       }
     };
