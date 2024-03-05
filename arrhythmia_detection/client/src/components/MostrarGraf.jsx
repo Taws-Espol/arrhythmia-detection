@@ -31,7 +31,7 @@ const MostrarGraf = () => {
         data: [],
         backgroundColor: "rgb(75, 192, 192)",
         borderColor: "rgb(75, 50, 50)",
-        borderWidth: 5,
+        borderWidth: 2,
       },
     ],
   });
