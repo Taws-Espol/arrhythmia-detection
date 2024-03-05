@@ -125,6 +125,7 @@ const MostrarGraf = () => {
         className="botonIniciar"
         style={{
           padding: "10px 20px",
+          margin: "15px",
           fontSize: "1rem",
           borderRadius: "5px",
           border: "none",
@@ -135,10 +136,15 @@ const MostrarGraf = () => {
       >
         {isRunning ? "Detener" : "Iniciar"} Gráfico
       </button>
-      {arrhythmiaType !== "NOT_STATUS" && (
+      {arrhythmiaType && arrhythmiaType !== "NO_STATUS" && (
         <div
           className="glassmorphism"
-          style={{ color: "#2c3e50", padding: "10px", borderRadius: "5px" }}
+          style={{
+            color: "#2c3e50",
+            padding: "10px",
+            borderRadius: "5px",
+            margin: "20px",
+          }}
         >
           <p>Tipo de Arritmia: {arrhythmiaType}</p>
         </div>
