@@ -25,7 +25,7 @@ function App() {
             </div>
           </div>
           <div className='glassmorphism' style={{alignSelf:'flex-start'}}>
-            <text style ={{color:'black'}}>Tipo de Arritmia: {socket.on('heartbeat_prediction')["prediction"]}</text>
+            <p style ={{color:'black'}}>Tipo de Arritmia: {socket.on('heartbeat_prediction')["prediction"]}</p>
           </div> 
         </div>
       </section>

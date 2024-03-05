@@ -30,7 +30,6 @@ def handle_connection_response_client(_):
 
 @socketio.on("heartbeat_input")
 def handle_heartbeat_input(heartbeat_number):
-    print("Heartbeat received: ", heartbeat_number)
     if transmission_manager.is_transmitting():
         heartbeat_number = float(heartbeat_number)
         socketio.emit("heartbeat_output", heartbeat_number)
