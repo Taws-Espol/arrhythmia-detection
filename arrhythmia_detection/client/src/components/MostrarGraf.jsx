@@ -22,9 +22,17 @@ ChartJS.register(
   Legend
 );
 
+const ARRHYTHMIA_TYPES = {
+  N: "Latidos no ectópicos (latido normal)",
+  S: "Latidos ectópicos supraventriculares",
+  V: "Latidos ectópicos ventriculares",
+  F: "Latidos de fusión",
+  Q: "Latidos desconocidos",
+};
+
 const MostrarGraf = () => {
   const [chartData, setChartData] = useState({
-    labels: [],
+    labels: Array.from({ length: 300 }, (_, i) => i),
     datasets: [
       {
         label: "Pulso Cardiaco",
@@ -38,27 +46,15 @@ const MostrarGraf = () => {
   const [isRunning, setIsRunning] = useState(false);
 
   const [arrhythmiaType, setArrhythmiaType] = useState("");
-
-  const maxDataPoints = 400; // Limite de puntos en el gráfico
+  // Limite de puntos en el gráfico
 
   const handleData = useCallback(
     (data) => {
       if (isRunning) {
         setChartData((prevChartData) => {
           const newData = { ...prevChartData };
-          const { labels, datasets } = newData;
-          const timeLabel = new Date().toLocaleTimeString();
-
-          // Agrega el nuevo punto
-          labels.push(timeLabel);
-          datasets[0].data.push(Number(data));
-
-          // Si ya tienes 400 puntos, elimina el más antiguo
-          if (labels.length > maxDataPoints) {
-            labels.shift();
-            datasets[0].data.shift();
-          }
-
+          const { datasets } = newData;
+          datasets[0].data = JSON.parse(data);
           return newData;
         });
       }
@@ -70,7 +66,7 @@ const MostrarGraf = () => {
     const handleArrhythmiaPrediction = (jsonString) => {
       const data = JSON.parse(jsonString);
       if (data.prediction !== "NO_STATUS") {
-        setArrhythmiaType(data.prediction);
+        setArrhythmiaType(ARRHYTHMIA_TYPES[data.prediction]);
       }
     };
     socket.on("heartbeat_prediction", handleArrhythmiaPrediction);
@@ -148,7 +144,7 @@ const MostrarGraf = () => {
             margin: "20px",
           }}
         >
-          <p>Tipo de Arritmia: {arrhythmiaType}</p>
+          <p>Tipo de Latido: {arrhythmiaType}</p>
         </div>
       )}
     </div>

@@ -9,7 +9,8 @@ class ArrhythmiaService:
 
     def predict_arrhythmia(self, number):
         # Perform any necessary processing on heartbeat_data
-        self.heartbeat_data.append(number)
+        heartbeat_number = float(number)
+        self.heartbeat_data.append(heartbeat_number)
         prediction = None
         class_likelihood = None
         if len(self.heartbeat_data) == 186:

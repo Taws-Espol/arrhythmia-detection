@@ -1,6 +1,7 @@
 import json
-from app.services.arrhythmia_service import ArrhythmiaService
 from app.socketio import socketio
+from app.services import ArrhythmiaService
+from app.services import ArrhythmiaTransmission
 from app.services import ConnectionManager
 from app.services import TransmissionManager
 
@@ -9,6 +10,8 @@ connection_manager = ConnectionManager()
 transmission_manager = TransmissionManager()
 
 arrhythmia_service = ArrhythmiaService()
+
+arrhythmia_transmission = ArrhythmiaTransmission()
 
 
 @socketio.on("connect")
@@ -31,11 +34,10 @@ def handle_connection_response_client(_):
 @socketio.on("heartbeat_input")
 def handle_heartbeat_input(heartbeat_number):
     if transmission_manager.is_transmitting():
-        heartbeat_number = float(heartbeat_number)
-        print("Heartbeat received: ", heartbeat_number)
-        socketio.emit("heartbeat_output", heartbeat_number)
-        json_string = arrhythmia_service.predict_arrhythmia(heartbeat_number)
-        socketio.emit("heartbeat_prediction", json_string)
+        heartbeat_array = arrhythmia_transmission.build_array(heartbeat_number)
+        socketio.emit("heartbeat_output", heartbeat_array)
+        heartbeat_prediction = arrhythmia_service.predict_arrhythmia(heartbeat_number)
+        socketio.emit("heartbeat_prediction", heartbeat_prediction)
 
 
 @socketio.on("start_transmission")
@@ -49,6 +51,7 @@ def handle_stop():
     transmission_manager.stop_transmission()
     print("Transmission Disabled")
 
+
 @socketio.on("event_name")
 def handle_prueba(data):
-    print("prueba",data)
+    print("prueba", data)
