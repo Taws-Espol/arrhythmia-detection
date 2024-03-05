@@ -1,109 +1,90 @@
 import { Line } from 'react-chartjs-2';
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect } from 'react';
+import { socket } from '../socket';
 import {
-    Chart as ChartJS,
-    CategoryScale,
-    LinearScale,
-    PointElement,
-    LineElement,
-    Title,
-    Tooltip,
-    Legend,
-  } from 'chart.js';
-  import {socket} from '../socket';
+  Chart as ChartJS,
+  CategoryScale,
+  LinearScale,
+  PointElement,
+  LineElement,
+  Title,
+  Tooltip,
+  Legend,
+} from 'chart.js';
 
-  ChartJS.register(
-    CategoryScale,
-    LinearScale,
-    PointElement,
-    LineElement,
-    Title,
-    Tooltip,
-    Legend
-  );
+ChartJS.register(
+  CategoryScale,
+  LinearScale,
+  PointElement,
+  LineElement,
+  Title,
+  Tooltip,
+  Legend
+);
 
-  
 const MostrarGraf = () => {
-    const [chartData, setChartData] = useState({
-        labels: [],
-        datasets: [
-            {
-                label: 'Pulso Cardiaco',
-                data: [0],
-                backgroundColor: 'rgb(75, 192, 192)',
-                borderColor: 'rgb(75, 50, 50)',
-                borderwidth: 5,
-            },
-        ],
-    });
-    const [isRunning, setIsRunning] = useState(false);
+  const [chartData, setChartData] = useState({
+    labels: [],
+    datasets: [
+      {
+        label: 'Pulso Cardiaco',
+        data: [],
+        backgroundColor: 'rgb(75, 192, 192)',
+        borderColor: 'rgb(75, 50, 50)',
+        borderWidth: 5,
+      },
+    ],
+  });
+  const [isRunning, setIsRunning] = useState(false);
 
+  const handleData = (data) => {
+    if (isRunning) {
+      setChartData((prevChartData) => {
+        const newData = { ...prevChartData };
+        newData.labels.push(new Date().toLocaleTimeString());
+        newData.datasets[0].data.push(Number(data));
+        return newData;
+      });
+    }
+  };
 
-    const addData = useCallback((dataNumber) => {
-        setChartData((prevChartData) => {
-            const newData = { ...prevChartData };
-            const puntos_sec = 1;
-            newData.labels = [...newData.labels.slice(-puntos_sec + 1), new Date().toLocaleTimeString()];
-            newData.datasets[0].data = [...newData.datasets[0].data.slice(-puntos_sec + 1), Number(dataNumber)*100];
-            return newData;
-        });
-    }, []);
-
-    // useEffect(() => {
-    //     let interval;
-    //     socket.on("heartbeat_output", ((data)=>{
-    //         if (isRunning) {
-    //             interval = setInterval(addData(Number(data)), 1000); // Ajustado a 1000 ms (1 segundo) para mejor claridad
-    //         }
-    //         else {
-    //             clearInterval(interval);
-    //         }
-    //     }))
-
-    //     return () => {
-    //         clearInterval(interval);
-    //         socket.off('heartbeat_output');
-    //     }
-            
-    // }, [isRunning, addData]);
-
-    useEffect(() => {
-        socket.on("heartbeat_output", (data) => {
-            console.log(data)
-            addData(Number(data));
-        });
-    
-        return () => {
-            socket.off('heartbeat_output');
-        }
-    });
-
-
-    const handleToggle = () => {
-        setIsRunning((prevIsRunning) => !prevIsRunning);
-        if(isRunning){
-            socket.emit('stop_transmission');
-        } else {
-            socket.emit('start_transmission');
-        }
+  useEffect(() => {
+    if (isRunning) {
+      socket.on("heartbeat_output", handleData);
+    }
+    return () => {
+      socket.off("heartbeat_output", handleData);
     };
+  }, [isRunning]);
 
-    return (
-        <div>
-            <Line
-                data={chartData}
-                options={{
-                    scales: {
-                        y: {
-                            beginAtZero: true
-                        }
-                    }
-                }}
-                id="myChart"
-            />
-            <button onClick={handleToggle} className="botonIniciar">{isRunning ? 'Detener' : 'Iniciar'} Gráfico</button>
-        </div>
-    );
+  const handleToggle = () => {
+    setIsRunning(!isRunning);
+    if (!isRunning) {
+      socket.emit('start_transmission');
+    } else {
+      socket.emit('stop_transmission');
+    }
+  };
+
+  return (
+    <div>
+      <Line
+        data={chartData}
+        options={{
+          scales: {
+            y: {
+              beginAtZero: true
+            }
+          },
+          responsive: true
+        }}
+        id="myChart"
+      />
+      <button onClick={handleToggle} className="botonIniciar">
+        {isRunning ? 'Detener' : 'Iniciar'} Gráfico
+      </button>
+    </div>
+  );
 };
 
 export default MostrarGraf;
