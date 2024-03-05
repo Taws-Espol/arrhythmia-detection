@@ -1,5 +1,5 @@
 import { Line } from "react-chartjs-2";
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect } from "react";
 import { socket } from "../socket";
 import {
   Chart as ChartJS,
@@ -48,20 +48,6 @@ const MostrarGraf = () => {
   const [arrhythmiaType, setArrhythmiaType] = useState("");
   // Limite de puntos en el gráfico
 
-  const handleData = useCallback(
-    (data) => {
-      if (isRunning) {
-        setChartData((prevChartData) => {
-          const newData = { ...prevChartData };
-          const { datasets } = newData;
-          datasets[0].data = JSON.parse(data);
-          return newData;
-        });
-      }
-    },
-    [isRunning, setChartData]
-  );
-
   useEffect(() => {
     const handleArrhythmiaPrediction = (jsonString) => {
       const data = JSON.parse(jsonString);
@@ -77,13 +63,22 @@ const MostrarGraf = () => {
   }, []);
 
   useEffect(() => {
+    const handleData = (data) => {
+      if (isRunning) {
+        const incomingData = JSON.parse(data);
+        setChartData({
+          ...chartData,
+          datasets: [{ ...chartData.datasets[0], data: incomingData }],
+        });
+      }
+    };
     if (isRunning) {
       socket.on("heartbeat_output", handleData);
     }
     return () => {
       socket.off("heartbeat_output", handleData);
     };
-  }, [isRunning, handleData]);
+  }, [isRunning, chartData]);
 
   const handleToggle = () => {
     setIsRunning(!isRunning);
@@ -98,7 +93,7 @@ const MostrarGraf = () => {
     <div>
       <div style={{ width: "100%", overflowX: "auto" }}>
         <Line
-          data={chartData}
+          data={{ ...chartData }}
           options={{
             scales: {
               y: {

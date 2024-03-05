@@ -13,3 +13,6 @@ class ArrhythmiaTransmission:
 
         json_string = json.dumps(self.heartbeat_data)
         return json_string
+
+    def clear_transmission(self):
+        self.heartbeat_data = [0] * 300
