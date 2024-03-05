@@ -127,7 +127,6 @@ const MostrarGraf = () => {
     </div>
 
   );
-
 };
 
 export default MostrarGraf;
