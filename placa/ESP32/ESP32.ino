@@ -221,7 +221,7 @@ void loop() {
     //por si acaso
     //emitHeartbeat(0.4);
     digitalWrite(LED_BUILTIN, HIGH);
-    delay(30);
+    delay(10);
    digitalWrite(LED_BUILTIN, LOW);
 }
 
