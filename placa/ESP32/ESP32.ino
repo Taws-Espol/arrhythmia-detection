@@ -60,40 +60,14 @@ float leerPulsoCardiaco() {
         return 0;
     } else {
         float valorAD8232 = analogRead(A0);
-        //USE_SERIAL.print(valorAD8232/escala);
-        //USE_SERIAL.print(" ");
-        //float filtro = filtroMediaMovil(valorAD8232, 0.8);
-        //float result = filtroFIR(filtro);
-        //USE_SERIAL.print(filtro/escala);
-        //USE_SERIAL.print(" ");
-        //USE_SERIAL.println(result/escala);
-        //return (result/escala);
-          // Aplicación de los filtros
-        static float prevLowPassOutput = 0;
-        static float prevHighPassOutput = 0;
-        static float prevNotchOutput = 0;
-        static float prevInput = 0;
-        
-        float lowPassOutput = lowPassFilter(ecgSignal, prevLowPassOutput, 0.1);
-        float highPassOutput = highPassFilter(lowPassOutput, prevInput, prevHighPassOutput, 0.1);
-        float notchOutput = notchFilter(highPassOutput, prevInput, prevNotchOutput, 0.1);
-
-        // Actualización de las variables previas
-        prevLowPassOutput = lowPassOutput;
-        prevHighPassOutput = highPassOutput;
-        prevNotchOutput = notchOutput;
-        prevInput = ecgSignal;
-
-        // Impresión de la señal filtrada
         USE_SERIAL.print(valorAD8232/escala);
         USE_SERIAL.print(" ");
-        USE_SERIAL.print(lowPassFilter/escala);
+        float filtro = filtroMediaMovil(valorAD8232, 0.75);
+        float result = filtroFIR(filtro);
+        USE_SERIAL.print(filtro/escala);
         USE_SERIAL.print(" ");
-        USE_SERIAL.print(highPassFilter/escala);
-        USE_SERIAL.print(" ");
-        USE_SERIAL.println(notchOutput/escala);
-
-        return valorAD8232/escala;
+        USE_SERIAL.println(result/escala);
+        return (result);
         }
 }
 
@@ -202,8 +176,8 @@ void setup() {
 
     // Conexion con placa
     Serial.begin(115200);
-    pinMode(LED_BUILTIN, OUTPUT);
     pinMode(A0, INPUT);
+    pinMode(LED_BUILTIN, OUTPUT);
     pinMode(34, INPUT);  // Configuración para la detección de desconexión de electrodos LO +
     pinMode(35, INPUT);  // Configuración para la detección de desconexión de electrodos LO -
     digitalWrite(34, LOW);
@@ -243,26 +217,11 @@ unsigned long messageTimestamp = 0;
 void loop() {
     socketIO.loop();
     float valor = leerPulsoCardiaco();
-    emitHeartbeat(valor);
+    emitHeartbeat(valor/escala);
     //por si acaso
     //emitHeartbeat(0.4);
     digitalWrite(LED_BUILTIN, HIGH);
-    delay(25);
+    delay(30);
    digitalWrite(LED_BUILTIN, LOW);
 }
 
-//filtros
-// Filtro pasa-bajos
-float lowPassFilter(float input, float prevOutput, float alpha) {
-  return alpha * input + (1 - alpha) * prevOutput;
-}
-
-// Filtro pasa-altos
-float highPassFilter(float input, float prevInput, float prevOutput, float alpha) {
-  return alpha * prevOutput + alpha * (input - prevInput);
-}
-
-// Filtro Notch
-float notchFilter(float input, float prevInput, float prevOutput, float alpha) {
-  return alpha * (input + prevOutput - prevInput);
-}
