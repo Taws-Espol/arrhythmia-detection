@@ -21,13 +21,13 @@
 
 
 .botonIniciar {
-  background-color: #00ff4476;
+  background-color: #ac1b1b8a;
   color: #000000;
-  font-style: "Figtree";
-  transition: color 0.5 ease-in-out;
+  border-color:#ac1b1b8a;
 }
 .botonIniciar:hover{
-  background-color: #ff6464d6;
+  background-color: #0892368a;
+  border-width: 0px;
 }
 
 
